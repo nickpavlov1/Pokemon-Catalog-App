@@ -48,11 +48,41 @@ const renderPokemonTemplate = (fetchedPokemon) => {
 
     setMovesList(fetchedPokemon, pokemonMoves); // Render moves list.
 
+    let pokemonSpeed = document.createElement('p'); // Render Pokemon speed.
+    pokemonSpeed.id = 'pokemon-speed';
+    pokemonSpeed.innerText = `Speed: ${fetchedPokemon.stats[5].base_stat}`;
+
+    let pokemonSpDef = document.createElement('p'); // Render Pokemon special defence.
+    pokemonSpDef.id = 'pokemon-sp-def';
+    pokemonSpDef.innerText = `Special Defence: ${fetchedPokemon.stats[4].base_stat}`;
+
+    let pokemonSpAtt = document.createElement('p'); // Render Pokemon special attack.
+    pokemonSpAtt.id = 'pokemon-sp-att';
+    pokemonSpAtt.innerText = `Special Attack: ${fetchedPokemon.stats[3].base_stat}`;
+
+    let pokemonDef = document.createElement('p'); // Render Pokemon defence.
+    pokemonDef.id = 'pokemon-def';
+    pokemonDef.innerText = `Defence: ${fetchedPokemon.stats[2].base_stat}`;
+
+    let pokemonAttack = document.createElement('p'); // Render Pokemon attack.
+    pokemonAttack.id = 'pokemon-att';
+    pokemonAttack.innerText = `Attack: ${fetchedPokemon.stats[1].base_stat}`;
+
+    let pokemonHp = document.createElement('p'); // Render Pokemon health points.
+    pokemonHp.id = 'pokemon-hp';
+    pokemonHp.innerText = `HP: ${fetchedPokemon.stats[0].base_stat}`;
+
     pokemonTemplate.append( // Appeding all the details to the Pokemon template.
         pokemonImg,
         pokemonName,
         pokemonAbililty,
-        pokemonMoves
+        pokemonMoves,
+        pokemonSpeed,
+        pokemonSpDef,
+        pokemonSpAtt,
+        pokemonDef,
+        pokemonAttack,
+        pokemonHp
     );
     pokemonTemplateContainer.appendChild(pokemonTemplate); // Appending each template container that holds each Pokemon's details to the main div container.
 
