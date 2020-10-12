@@ -1,4 +1,46 @@
-#poke-canvas {
-    border: 1px solid black;
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Oswald', sans-serif;
 }
 
+#header-text {
+    text-align: center;
+    margin: 0.5rem 0 1rem 0;
+}
+
+#canvas-container {
+    width: 100%;
+    text-align: center;
+}
+
+#poke-canvas {
+    border: 1px solid black;
+    display: inline;
+}
+
+#pokemon-container{
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.pokemon-template {
+    border: 3px solid #535353;
+    border-radius: 3%;
+    width: 14rem;
+    margin: 1rem 1rem 1rem 1rem;
+}
+
+.poke-avatar {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 150px;
+}
+
+.pokemon-name {
+    text-align: center;
+    margin-bottom: 12px;
+}
