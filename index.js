@@ -27,10 +27,12 @@ const renderPokemonTemplate = (fetchedPokemon) => {
     pokemonTemplate.id = fetchedPokemon.id;
 
     let pokemonImg = document.createElement('img'); // Render Pokemon avatar
+    pokemonImg.className = 'poke-avatar';
     pokemonImg.srcset = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${fetchedPokemon.id}.png`; // URL to default pokemon avatar.
 
-    let pokemonName = document.createElement('h3'); // Render name
-    pokemonName.innerText = fetchedPokemon.name;
+    let pokemonName = document.createElement('h2'); // Render name
+    pokemonName.className = 'pokemon-name';
+    pokemonName.innerText = capitalize(fetchedPokemon.name);
 
     let pokemonAbililty = document.createElement('p');  // Render Pokemon ability p element
 
@@ -39,7 +41,7 @@ const renderPokemonTemplate = (fetchedPokemon) => {
         // Loop going through all the Pokemon's abilities and checking for the first one that the property is_hidden is false.
 
         if (!fetchedPokemon.abilities[i].is_hidden) {
-        pokemonAbililty.innerText = `Ability: ${fetchedPokemon.abilities[i].ability.name}`;
+        pokemonAbililty.innerText = `Ability: ${capitalize(fetchedPokemon.abilities[i].ability.name)}`;
         };
     };
 
@@ -93,10 +95,14 @@ const setMovesList = (pokemon, div) => { // Function to get the first four moves
 
     for (let i = 0; i <= 3; i++) {
         let pokemonMove = document.createElement('p'); 
-        pokemonMove.innerText = `Move #${i+1}: ${pokemon.moves[i].move.name}`; // Setting move number and name.
+        pokemonMove.innerText = `Move #${i+1}: ${capitalize(pokemon.moves[i].move.name)}`; // Setting move number and name.
         div.append(pokemonMove);
     };
 };
 
+const capitalize = word => { // Change the first letter of a given word to upper case.
+    const capitalizedWord = word.charAt(0).toUpperCase() + word.slice(1);
+    return capitalizedWord;
+}
 
 getPokemon(); // Render all Pokemon templates. 
