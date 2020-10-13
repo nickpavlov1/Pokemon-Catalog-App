@@ -27,15 +27,15 @@ const renderPokemonTemplate = (fetchedPokemon) => {
     pokemonTemplate.id = fetchedPokemon.id;
 
     let pokemonImg = document.createElement('img'); // Render Pokemon avatar
-    pokemonImg.className = 'poke-avatar';
+    pokemonImg.id = 'poke-avatar';
     pokemonImg.srcset = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${fetchedPokemon.id}.png`; // URL to default pokemon avatar.
 
     let pokemonName = document.createElement('h2'); // Render name
-    pokemonName.className = 'pokemon-name';
+    pokemonName.id = 'pokemon-name';
     pokemonName.innerText = capitalize(fetchedPokemon.name);
 
     let pokemonAbililty = document.createElement('p');  // Render Pokemon ability p element
-
+    pokemonAbililty.className = 'poke-stats';
     for (let i = 0; i < fetchedPokemon.abilities.length; i++) { 
 
         // Loop going through all the Pokemon's abilities and checking for the first one that the property is_hidden is false.
@@ -46,32 +46,32 @@ const renderPokemonTemplate = (fetchedPokemon) => {
     };
 
     let pokemonMoves = document.createElement('div');  // Rendering div element to contain the rendered moves.
-    pokemonMoves.classList.add('moves-list');
+    pokemonMoves.className = 'poke-stats';
 
     setMovesList(fetchedPokemon, pokemonMoves); // Render moves list.
 
     let pokemonSpeed = document.createElement('p'); // Render Pokemon speed.
-    pokemonSpeed.id = 'pokemon-speed';
+    pokemonSpeed.className = 'poke-stats';
     pokemonSpeed.innerText = `Speed: ${fetchedPokemon.stats[5].base_stat}`;
 
     let pokemonSpDef = document.createElement('p'); // Render Pokemon special defence.
-    pokemonSpDef.id = 'pokemon-sp-def';
+    pokemonSpDef.className = 'poke-stats';
     pokemonSpDef.innerText = `Special Defence: ${fetchedPokemon.stats[4].base_stat}`;
 
     let pokemonSpAtt = document.createElement('p'); // Render Pokemon special attack.
-    pokemonSpAtt.id = 'pokemon-sp-att';
+    pokemonSpAtt.className = 'poke-stats';
     pokemonSpAtt.innerText = `Special Attack: ${fetchedPokemon.stats[3].base_stat}`;
 
     let pokemonDef = document.createElement('p'); // Render Pokemon defence.
-    pokemonDef.id = 'pokemon-def';
+    pokemonDef.className = 'poke-stats';
     pokemonDef.innerText = `Defence: ${fetchedPokemon.stats[2].base_stat}`;
 
     let pokemonAttack = document.createElement('p'); // Render Pokemon attack.
-    pokemonAttack.id = 'pokemon-att';
+    pokemonAttack.className = 'poke-stats';
     pokemonAttack.innerText = `Attack: ${fetchedPokemon.stats[1].base_stat}`;
 
     let pokemonHp = document.createElement('p'); // Render Pokemon health points.
-    pokemonHp.id = 'pokemon-hp';
+    pokemonHp.className = 'poke-stats';
     pokemonHp.innerText = `HP: ${fetchedPokemon.stats[0].base_stat}`;
 
     pokemonTemplate.append( // Appeding all the details to the Pokemon template.
@@ -94,7 +94,7 @@ const renderPokemonTemplate = (fetchedPokemon) => {
 const setMovesList = (pokemon, div) => { // Function to get the first four moves from the Pokemons moves list.
 
     for (let i = 0; i <= 3; i++) {
-        let pokemonMove = document.createElement('p'); 
+        let pokemonMove = document.createElement('p');
         pokemonMove.innerText = `Move #${i+1}: ${capitalize(pokemon.moves[i].move.name)}`; // Setting move number and name.
         div.append(pokemonMove);
     };
