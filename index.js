@@ -1,5 +1,5 @@
 const getPokemon = () => { // Fetching the first 20 pokemon from the Pokemon API.
-    fetch('https://pokeapi.co/api/v2/pokemon')
+    fetch('https://pokeapi.co/api/v2/pokemon?limit=151')
     .then(response => response.json())
     .then((fetchedPokemon) => {
         fetchedPokemon.results.forEach((pokemon) => { 
@@ -130,7 +130,7 @@ const selectPokemon = selectedPokemon => {
             let selectedPokemonCurrentHP = selectedPokemonFullHP; // Creating a variable containing the HP that will be decreased and visualised during the battle.
 
             context.drawImage(selectedPokemonImg, 30, 220, 150, 150); // Visualising the selected Pokemon's image on the canvas.
-            context.fillText(selectedPokemonName, 260, 265); // // Visualising the selected Pokemon's name.
+            context.fillText(selectedPokemonName, 260, 265); // Visualising the selected Pokemon's name.
             context.fillText(`HP: ${selectedPokemonCurrentHP}/${selectedPokemonFullHP}`, 260, 295); // Visualising the selected Pokemon's current HP and total HP.
 
             const randomOpponentId = pickRandomOpponent(selectedPokemon.id); // Generating a random ID to choose an opponent.
@@ -144,16 +144,18 @@ const selectPokemon = selectedPokemon => {
             context.drawImage(opponentImg, 270, 20, 150, 150); // Visualising opponent's image on the canvas.
             context.fillText(opponentName, 80, 50); // Visualising opponet's name.
             context.fillText(`HP: ${opponentCurrentHP}/${opponentFullHP}`, 80, 80); // Visualising the oppponent's current HP and total HP.
+
+            window.scrollTo(0, 0); // Scroll to top of the screen if needed.
         };
     });
 };
 
 
 const pickRandomOpponent = yourPokemonId => { // Picking a random number to generate for the opponent's ID without repeating the selected Pokemon's ID.
-    let randomOpponentId = Math.floor(Math.random() * 20) + 1; // Random number from 1 to 20.
+    let randomOpponentId = Math.floor(Math.random() * 151) + 1; // Random number from 1 to 20.
 
     if (yourPokemonId == randomOpponentId) { // Checking if it matches the selected Pokemon's ID. (string == number)
-        if (randomOpponentId === 20) {
+        if (randomOpponentId === 151) {
             randomOpponentId -= 1;
         } else {
             randomOpponentId += 1;
