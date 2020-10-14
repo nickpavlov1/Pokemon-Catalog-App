@@ -99,17 +99,23 @@ const renderPokemonTemplate = fetchedPokemon => {
 
 const setMovesList = (pokemon, div) => { // Function to get the first four moves from the Pokemons moves list.
 
-    for (let i = 0; i <= 3; i++) {
+    if (pokemon.name === 'ditto') { // Exception case for this Pokemon since it doesn't have more than one move.
         const pokemonMove = document.createElement('p');
-        pokemonMove.innerText = `Move #${i+1}: ${capitalize(pokemon.moves[i].move.name)}`; // Setting move number and name.
+        pokemonMove.innerText = `Move #1: ${capitalize(pokemon.moves[0].move.name)}`; 
         div.append(pokemonMove);
+    } else {
+        for (let i = 0; i <= 3; i++) {
+            const pokemonMove = document.createElement('p');
+            pokemonMove.innerText = `Move #${i+1}: ${capitalize(pokemon.moves[i].move.name)}`; // Setting move number and name.
+            div.append(pokemonMove);
+        };
     };
 };
 
 const capitalize = word => { // Change the first letter of a given word to upper case.
     const capitalizedWord = word.charAt(0).toUpperCase() + word.slice(1);
     return capitalizedWord;
-}
+};
 
 const selectPokemon = selectedPokemon => {
 
