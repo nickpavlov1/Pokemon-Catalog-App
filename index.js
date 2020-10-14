@@ -113,7 +113,7 @@ const capitalize = word => { // Change the first letter of a given word to upper
 
 const selectPokemon = selectedPokemon => {
 
-    // Function containing a click event that visualises a selected Pokemon and random Pokemon in the canvas element and inciating a battle between them.
+    // Function containing a click event that visualises a selected Pokemon and a random Pokemon in the canvas element and initiating a battle between them.
 
     selectedPokemon.addEventListener('click', () => { 
 
@@ -126,14 +126,14 @@ const selectPokemon = selectedPokemon => {
             
             const selectedPokemonImg = document.getElementById(selectedPokemon.id).firstElementChild.nextSibling; // Using the selected Pokemon's ID to get it's backwards image.
             const selectedPokemonName = selectedPokemonImg.nextSibling.innerText; // Selecting the element containing the chosen Pokemon's name.
-            const selectedPokemonFullHP = document.getElementById(selectedPokemon.id).lastElementChild.innerText.split(" ")[1]; // Getting the chosen Pokemon's HP and turning them itno a number.
+            const selectedPokemonFullHP = document.getElementById(selectedPokemon.id).lastElementChild.innerText.split(" ")[1]; // Getting the chosen Pokemon's HP and turning them into a number.
             let selectedPokemonCurrentHP = selectedPokemonFullHP; // Creating a variable containing the HP that will be decreased and visualised during the battle.
 
             context.drawImage(selectedPokemonImg, 30, 220, 150, 150); // Visualising the selected Pokemon's image on the canvas.
             context.fillText(selectedPokemonName, 260, 265); // // Visualising the selected Pokemon's name.
             context.fillText(`HP: ${selectedPokemonCurrentHP}/${selectedPokemonFullHP}`, 260, 295); // Visualising the selected Pokemon's current HP and total HP.
 
-            const randomOpponentId = pickRandomOpponent(selectedPokemon.id); // Generating a random ID to chose a opponent.
+            const randomOpponentId = pickRandomOpponent(selectedPokemon.id); // Generating a random ID to choose an opponent.
 
             const opponentPokemon = document.getElementById(randomOpponentId); // Getting opponent's template.
             const opponentImg = opponentPokemon.firstElementChild; // Getting opponent's image.
@@ -150,9 +150,9 @@ const selectPokemon = selectedPokemon => {
 
 
 const pickRandomOpponent = yourPokemonId => { // Picking a random number to generate for the opponent's ID without repeating the selected Pokemon's ID.
-    let randomOpponentId = Math.floor(Math.random() * 20) + 1;
+    let randomOpponentId = Math.floor(Math.random() * 20) + 1; // Random number from 1 to 20.
 
-    if (yourPokemonId == randomOpponentId) {
+    if (yourPokemonId == randomOpponentId) { // Checking if it matches the selected Pokemon's ID. (string == number)
         if (randomOpponentId === 20) {
             randomOpponentId -= 1;
         } else {
