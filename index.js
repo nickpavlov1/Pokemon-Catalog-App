@@ -1,21 +1,28 @@
-const getPokemon = () => { // Fetching the first 20 pokemon from the Pokemon API.
+let yourX = 30;
+let yourY = 230;
+let opponentX = 210;
+let opponentY = 20;
+const imageSize = 150;
+
+const canvas = document.getElementById('poke-canvas'); 
+const context = canvas.getContext('2d');
+context.font = "bold 30px Calibri";
+context.fillText('Pick Your Pokemon!', 80, 200);
+
+const getPokemon = () => { // Fetching the first 151 pokemon from the Pokemon API.
     fetch('https://pokeapi.co/api/v2/pokemon?limit=151')
     .then(response => response.json())
     .then((fetchedPokemon) => {
-        fetchedPokemon.results.forEach((pokemon) => { 
-            fetchEachPokemon(pokemon); 
-        });
+        fetchedPokemon.results.forEach(fetchEachPokemon);
     });
 };
 
 const fetchEachPokemon = pokemon => { // Using the individual URLs for each pokemon to fetch further information for their template.
-    const pokeUrl = pokemon.url; // <-- Individual URL; example: https://pokeapi.co/api/v2/pokemon/1/
-
+    const pokeUrl = pokemon.url.slice(0, -1); // <-- Individual URL; example: https://pokeapi.co/api/v2/pokemon/1/
+    // Slicing the last character "/" from url to prevent bug with receiving Pokemon with ID #4.
     fetch(pokeUrl)
     .then(response => response.json())
-    .then((fetchedPokemon) => {
-        renderPokemonTemplate(fetchedPokemon);
-    });
+    .then(renderPokemonTemplate);
 };
 
 const renderPokemonTemplate = fetchedPokemon => { 
@@ -99,16 +106,12 @@ const renderPokemonTemplate = fetchedPokemon => {
 
 const setMovesList = (pokemon, div) => { // Function to get the first four moves from the Pokemons moves list.
 
-    if (pokemon.name === 'ditto') { // Exception case for this Pokemon since it doesn't have more than one move.
+    const movesArray = pokemon.moves.slice(0, 4);
+
+    for (let i = 0; i < movesArray.length; i++) {
         const pokemonMove = document.createElement('p');
-        pokemonMove.innerText = `Move #1: ${capitalize(pokemon.moves[0].move.name)}`; 
+        pokemonMove.innerText = `Move #${i+1}: ${capitalize(movesArray[i].move.name)}`; // Setting move number and name.
         div.append(pokemonMove);
-    } else {
-        for (let i = 0; i <= 3; i++) {
-            const pokemonMove = document.createElement('p');
-            pokemonMove.innerText = `Move #${i+1}: ${capitalize(pokemon.moves[i].move.name)}`; // Setting move number and name.
-            div.append(pokemonMove);
-        };
     };
 };
 
@@ -117,48 +120,157 @@ const capitalize = word => { // Change the first letter of a given word to upper
     return capitalizedWord;
 };
 
+
+
+
+
 const selectPokemon = selectedPokemon => {
 
     // Function containing a click event that visualises a selected Pokemon and a random Pokemon in the canvas element and initiating a battle between them.
 
     selectedPokemon.addEventListener('click', () => { 
 
-        const canvas = document.getElementById('poke-canvas');
+        // YOUR POKEMON
+        const selectedPokemonImg = document.getElementById(selectedPokemon.id).firstElementChild.nextSibling; // Using the selected Pokemon's ID to get it's backwards image.
+        const selectedPokemonName = selectedPokemonImg.nextSibling.innerText; // Selecting the element containing the chosen Pokemon's name.
 
-        if (isCanvasEmpty(canvas)) { // Checking if the canvas is empty to generate a new battle. Using it not to overlap events.
-            
-            const context = canvas.getContext('2d');
-            context.font = "26px Calibri";
-            
-            const selectedPokemonImg = document.getElementById(selectedPokemon.id).firstElementChild.nextSibling; // Using the selected Pokemon's ID to get it's backwards image.
-            const selectedPokemonName = selectedPokemonImg.nextSibling.innerText; // Selecting the element containing the chosen Pokemon's name.
-            const selectedPokemonFullHP = document.getElementById(selectedPokemon.id).lastElementChild.innerText.split(" ")[1]; // Getting the chosen Pokemon's HP and turning them into a number.
-            let selectedPokemonCurrentHP = selectedPokemonFullHP; // Creating a variable containing the HP that will be decreased and visualised during the battle.
+         // Getting the chosen Pokemon's HP and turning them into a number.  
+        const selectedPokemonFullHP = Number(document.getElementById(selectedPokemon.id).lastElementChild.innerText.split(" ")[1]);
+        let selectedPokemonCurrentHP = selectedPokemonFullHP; // Creating a variable containing the HP that will be decreased and visualised during the battle.
 
-            context.drawImage(selectedPokemonImg, 30, 220, 150, 150); // Visualising the selected Pokemon's image on the canvas.
-            context.fillText(selectedPokemonName, 260, 265); // Visualising the selected Pokemon's name.
-            context.fillText(`HP: ${selectedPokemonCurrentHP}/${selectedPokemonFullHP}`, 260, 295); // Visualising the selected Pokemon's current HP and total HP.
+        // Tracing the speed of the selected Pokemon through the DOM and turning it into a number value.
+        const selectedPokemonSpeed = Number(selectedPokemonImg.nextSibling.nextSibling.nextSibling.nextSibling.innerText.split(" ")[1]);
 
-            const randomOpponentId = pickRandomOpponent(selectedPokemon.id); // Generating a random ID to choose an opponent.
+        const selectedPokemonAttack = Number(selectedPokemon.lastElementChild.previousSibling.innerText.split(" ")[1]); // Turning pokemon attack value into a number.
+        const selectedPokemonDefence = Number(selectedPokemon.lastElementChild.previousSibling.previousSibling.innerText.split(" ")[1]); // Turning pokemon attack value into a number.
+        // console.log(selectedPokemonDefence, selectedPokemonAttack)
+        
+        // OPPONENT
+        const randomOpponentId = pickRandomOpponent(selectedPokemon.id); // Generating a random ID to choose an opponent.
+        const opponentPokemon = document.getElementById(randomOpponentId); // Getting opponent's template.
+        const opponentImg = opponentPokemon.firstElementChild; // Getting opponent's image.
+        const opponentName = opponentImg.nextSibling.nextSibling.innerText; // Getting opponent's name.
+        const opponentFullHP = Number(opponentPokemon.lastElementChild.innerText.split(" ")[1]); // Getting opponent's HP and turning them into a number.
+        let opponentCurrentHP = opponentFullHP; // Creating a variable containing the HP that will be decreased and visualised during the battle.
 
-            const opponentPokemon = document.getElementById(randomOpponentId); // Getting opponent's template.
-            const opponentImg = opponentPokemon.firstElementChild; // Getting opponent's image.
-            const opponentName = opponentImg.nextSibling.nextSibling.innerText; // Getting opponent's name.
-            const opponentFullHP = opponentPokemon.lastElementChild.innerText.split(" ")[1]; // Getting opponent's HP and turning them into a number.
-            let opponentCurrentHP = opponentFullHP; // Creating a variable containing the HP that will be decreased and visualised during the battle.
+        const opponentAttack = Number(opponentPokemon.lastElementChild.previousSibling.innerText.split(" ")[1]); // Turning opponent attack value into a number.
+        const opponentDefence = Number(opponentPokemon.lastElementChild.previousSibling.innerText.split(" ")[1]); // Turning opponent attack value into a number.
 
-            context.drawImage(opponentImg, 270, 20, 150, 150); // Visualising opponent's image on the canvas.
-            context.fillText(opponentName, 80, 50); // Visualising opponet's name.
-            context.fillText(`HP: ${opponentCurrentHP}/${opponentFullHP}`, 80, 80); // Visualising the oppponent's current HP and total HP.
+        // Tracing the speed of the opponent through the DOM and turning it into a number value.
+        const opponentSpeed = Number(opponentImg.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.innerText.split(" ")[1]);
 
-            window.scrollTo(0, 0); // Scroll to top of the screen if needed.
+
+
+        const draw = () => {
+            // OPPONENT POKEMON
+            context.drawImage(opponentImg, opponentX, opponentY, imageSize, imageSize);
+            context.font = "bold 26px Calibri";
+            context.fillText(opponentName, 60, 50);
+            context.font = "20px Calibri";
+            context.fillText(`HP: ${opponentCurrentHP}/${opponentFullHP}`, 60, 80);
+            // YOUR POKEMON
+            context.drawImage(selectedPokemonImg, yourX, yourY, imageSize, imageSize);
+            context.font = "bold 26px Calibri";
+            context.fillText(selectedPokemonName, 260, 275);
+            context.font = "20px Calibri";
+            context.fillText(`HP: ${selectedPokemonCurrentHP}/${selectedPokemonFullHP}`, 260, 305);
         };
+
+        const moveYourPokemonForwards = () => {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            draw();
+            // Change position on condition
+            if (yourX < 170 && yourY > 90) {
+                yourX += 2.5;
+                yourY -= 2.5;
+                requestAnimationFrame(moveYourPokemonForwards);
+            };
+        };
+
+        const moveYourPokemonBackwards = () => {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            draw();
+            if (yourX > 30 && yourY < 230) {
+                yourX -= 2.5;
+                yourY += 2.5;
+                requestAnimationFrame(moveYourPokemonBackwards);
+
+            } else if (yourX === 30 && yourY === 230) {
+                if (opponentCurrentHP > 0) {
+                    yourOpponentAttack();
+                } else {
+                    context.clearRect(0,0, canvas.width, canvas.height)
+                    context.font = "bold 30px Calibri";
+                    context.fillText('YOU WIN', 140, 200);
+                };
+            };
+
+        };
+
+        const moveOpponentForwards = () => {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            draw();
+            // Change position on condition
+            if (opponentX > 80 && opponentY < 150) {
+                opponentX -= 2.5;
+                opponentY += 2.5;
+                requestAnimationFrame(moveOpponentForwards);
+            };
+        };
+
+        const moveOpponentBackwards = () => {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            draw();
+            if (opponentX < 210 && opponentY > 20) {
+                opponentX += 2.5;
+                opponentY -= 2.5;
+                requestAnimationFrame(moveOpponentBackwards);
+
+            } else if (opponentX === 210 && opponentY === 20) {
+                if (selectedPokemonCurrentHP > 0) {
+                    yourPokemonAttack();
+                } else {
+                    context.clearRect(0,0, canvas.width, canvas.height)
+                    context.font = "bold 30px Calibri";
+                    context.fillText('YOU LOSE', 140, 200);
+                };
+            };
+        };
+
+        const yourPokemonAttack = () => {
+
+            moveYourPokemonForwards();
+
+            setTimeout(() => {
+                moveYourPokemonBackwards();
+                opponentCurrentHP = inflictDamage(opponentCurrentHP, calculateDamage(selectedPokemonAttack, opponentDefence));
+            }, 1500);
+        };
+
+        const yourOpponentAttack = () => {
+            moveOpponentForwards();
+
+            setTimeout(() => {
+                moveOpponentBackwards();
+                selectedPokemonCurrentHP = inflictDamage(selectedPokemonCurrentHP, calculateDamage(opponentAttack, selectedPokemonDefence));
+            }, 1500);  
+        };
+
+        if (selectedPokemonSpeed >= opponentSpeed) {
+            yourPokemonAttack();
+        }; 
+        if (selectedPokemonSpeed < opponentSpeed) {
+            yourOpponentAttack();
+        };
+
+
+        scrollTo(0, 0); // Scroll to top of the screen if needed.
     });
 };
 
-
-const pickRandomOpponent = yourPokemonId => { // Picking a random number to generate for the opponent's ID without repeating the selected Pokemon's ID.
-    let randomOpponentId = Math.floor(Math.random() * 151) + 1; // Random number from 1 to 20.
+// Picking a random number to generate for the opponent's ID without repeating the selected Pokemon's ID.
+const pickRandomOpponent = yourPokemonId => { 
+    let randomOpponentId = Math.floor(Math.random() * 151) + 1; // Random number from 1 to 151.
 
     if (yourPokemonId == randomOpponentId) { // Checking if it matches the selected Pokemon's ID. (string == number)
         if (randomOpponentId === 151) {
@@ -170,12 +282,17 @@ const pickRandomOpponent = yourPokemonId => { // Picking a random number to gene
     return randomOpponentId;
 };
 
-const isCanvasEmpty = canvas => { // Checking if the canvas is empty. 
-    const blankCanvas = document.getElementById('poke-canvas');
-
-    blankCanvas.width = canvas.width;
-    blankCanvas.height = canvas.height;
-
-    return canvas.toDataURL() === blankCanvas.toDataURL(); // Returns true if empty.
+const calculateDamage = (att, def) => {
+    const attackValue = (att / def) * Math.floor(Math.random() * 100);
+    return attackValue;
 };
+
+const inflictDamage = (hp, dmg) => {
+    hp = Math.floor(hp - dmg);
+    if (hp < 0) {
+        hp = 0;  
+    };
+    return hp;
+};
+
 getPokemon(); // Render all Pokemon templates. 
